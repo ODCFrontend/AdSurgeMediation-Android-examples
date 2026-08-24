@@ -1,0 +1,28 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        // AdSurgeMediation official artifact repository (GitHub Packages)
+        maven {
+            name = 'AdSurgeMediationGitHubPackages'
+            url  = uri('https://maven.pkg.github.com/odcfrontend/TAN_Android_Maven')
+            credentials {
+                username = settings.providers.gradleProperty('gpr.user').orNull
+                        ?: System.getenv('GITHUB_USER')
+                password = settings.providers.gradleProperty('gpr.token').orNull
+                        ?: System.getenv('GITHUB_TOKEN')
+            }
+        }
+    }
+}
+
+rootProject.name = "AdSurgeMediation-Android-Sample"
+include ':app'

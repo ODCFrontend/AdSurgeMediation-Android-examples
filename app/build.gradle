@@ -1,0 +1,35 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.adsurge.mediation.sample'
+    compileSdk Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
+
+    defaultConfig {
+        applicationId "com.adsurge.mediation.sample"
+        minSdk Integer.parseInt(project.ANDROID_BUILD_MIN_SDK_VERSION)
+        targetSdk Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+
+    implementation "com.adsurge.mediation:tan-sdk:${project.SDK_VERSION}"
+    implementation "com.adsurge.mediation:admob-adapter:${project.ADMOB_ADAPTER_VERSION}"
+}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  AdSurgeMediation SDK FileProvider path configuration
+  Purpose: the SDK exports session_logs via FileProvider for developers to download
+-->
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <cache-path name="adsurge_mediation_session_logs" path="session_logs/" />
+</paths>
