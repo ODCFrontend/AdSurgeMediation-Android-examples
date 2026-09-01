@@ -4,8 +4,8 @@ An official sample project for developers, demonstrating how to integrate the Ad
 
 ## Features
 
-- SDK initialization (`SampleApplication` + `AdsurgeMediationAdManager`)
-- Privacy compliance configuration (COPPA / CCPA / GDPR, `PrivacySettingsActivity`)
+- SDK initialization (`MainActivity`)
+- Privacy compliance configuration (COPPA / CCPA / GDPR, on `MainActivity`)
 - Rewarded video (`RewardedAdActivity`), including Server-Side Verification (SSV) params
 - Interstitial (`InterstitialAdActivity`)
 - Banner (320x50) / MREC (300x250) with runtime format switch (`BannerAdActivity`)
@@ -17,16 +17,12 @@ An official sample project for developers, demonstrating how to integrate the Ad
 
 ```text
 app/src/main/java/com/adsurge/mediation/sample/
-├── SampleApplication.java          Application entry point: SDK initialization
-├── AdsurgeMediationAdManager.java  SDK wrapper layer (init / load / show)
 ├── SampleAdConfig.java             App ID and ad unit ID configuration
-├── MainActivity.java               Home screen
-├── ads/                            Ad format sample Activities
-│   ├── RewardedAdActivity.java
-│   ├── InterstitialAdActivity.java
-│   └── BannerAdActivity.java
-└── privacy/                        Privacy configuration
-    └── PrivacySettingsActivity.java
+├── MainActivity.java               Home screen: SDK initialization + privacy settings
+└── ads/                            Ad format sample Activities
+    ├── RewardedAdActivity.java
+    ├── InterstitialAdActivity.java
+    └── BannerAdActivity.java
 ```
 
 ## Dependency Setup

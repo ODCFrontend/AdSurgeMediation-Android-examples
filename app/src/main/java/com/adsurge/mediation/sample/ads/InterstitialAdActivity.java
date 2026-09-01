@@ -1,18 +1,11 @@
 package com.adsurge.mediation.sample.ads;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.adsurge.mediation.sample.AdsurgeMediationAdManager;
 import com.adsurge.mediation.sample.R;
 import com.adsurge.mediation.sample.SampleAdConfig;
 
@@ -22,14 +15,13 @@ import com.qq.e.tan.api.ads.TanInterstitialAd;
 import com.qq.e.tan.managers.TANAdSdk;
 import com.qq.e.tan.util.AdError;
 
-public class InterstitialAdActivity extends AppCompatActivity {
+public class InterstitialAdActivity extends Activity {
 
     private static final String TAG = "InterstitialAdActivity";
 
     private TanInterstitialAd mInterstitialAd;
     private TextView mLogText;
     private Button mShowButton;
-    private String mDevCustomInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +41,14 @@ public class InterstitialAdActivity extends AppCompatActivity {
     private void setupListeners() {
         findViewById(R.id.btn_load).setOnClickListener(v -> loadInterstitialAd());
         mShowButton.setOnClickListener(v -> showInterstitialAd());
-        findViewById(R.id.btn_custom_info).setOnClickListener(v -> showCustomInfoDialog());
     }
 
     private void loadInterstitialAd() {
         appendLog("Loading interstitial ad...");
         mShowButton.setEnabled(false);
 
-        mInterstitialAd = AdsurgeMediationAdManager.loadInterstitialAd(this, SampleAdConfig.INTERSTITIAL_AD_UNIT_ID,
-                new TanInterstitialAdListener() {
+        mInterstitialAd = new TanInterstitialAd(this, SampleAdConfig.INTERSTITIAL_AD_UNIT_ID);
+        mInterstitialAd.setListener(new TanInterstitialAdListener() {
                     @Override
                     public void onAdLoaded(TanAd tanAd) {
                         appendLog("Ad loaded");
@@ -91,9 +82,13 @@ public class InterstitialAdActivity extends AppCompatActivity {
                     }
                 });
 
-        if (!TextUtils.isEmpty(mDevCustomInfo)) {
-            mInterstitialAd.setDevCustomInfo(mDevCustomInfo);
-        }
+        // Demonstrates setDevCustomInfo (per-ad custom info, reported with every
+        // impression/click) and TANAdSdk.uploadAttributionInfo (one-off attribution).
+        // See AdsurgeMediation Guidance §8. Replace with real values in production.
+        TANAdSdk.uploadAttributionInfo("demo_attribution_info");
+        mInterstitialAd.setDevCustomInfo("demo_custom_info");
+
+        mInterstitialAd.loadAd();
     }
 
     private void showInterstitialAd() {
@@ -101,43 +96,11 @@ public class InterstitialAdActivity extends AppCompatActivity {
             appendLog("Load an ad first");
             return;
         }
-        boolean success = AdsurgeMediationAdManager.showInterstitialAd(mInterstitialAd, this);
-        if (!success) {
-            appendLog("Ad not ready, cannot show");
+        if (!mInterstitialAd.isValid()) {
+            appendLog("Ad not ready, call loadAd() again");
+            return;
         }
-    }
-
-    /**
-     * Demonstrates setDevCustomInfo (per-ad custom info) and TANAdSdk.uploadAttributionInfo
-     * (one-off attribution reporting). See AdsurgeMediation Guidance §8.
-     */
-    private void showCustomInfoDialog() {
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_input, null);
-        EditText etAttribution = dialogView.findViewById(R.id.et_input_1);
-        EditText etCustomInfo = dialogView.findViewById(R.id.et_input_2);
-        etAttribution.setHint("attribution info (JSON)");
-        etCustomInfo.setHint("dev custom info (JSON)");
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.action_custom_info)
-                .setView(dialogView)
-                .setPositiveButton("Confirm", (dialog, which) -> {
-                    String attributionInfo = etAttribution.getText().toString().trim();
-                    String devCustomInfo = etCustomInfo.getText().toString().trim();
-                    if (!TextUtils.isEmpty(attributionInfo)) {
-                        TANAdSdk.uploadAttributionInfo(attributionInfo);
-                        appendLog("uploadAttributionInfo: " + attributionInfo);
-                    }
-                    if (!TextUtils.isEmpty(devCustomInfo)) {
-                        mDevCustomInfo = devCustomInfo;
-                        if (mInterstitialAd != null) {
-                            mInterstitialAd.setDevCustomInfo(devCustomInfo);
-                        }
-                        appendLog("setDevCustomInfo: " + devCustomInfo);
-                    }
-                })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel())
-                .show();
+        mInterstitialAd.showAd(this);
     }
 
     private void appendLog(String message) {

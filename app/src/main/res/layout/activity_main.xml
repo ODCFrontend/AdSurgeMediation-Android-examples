@@ -34,10 +34,40 @@
         android:layout_marginBottom="12dp"
         android:text="@string/action_banner" />
 
-    <Button
-        android:id="@+id/btn_privacy"
+    <TextView
+        android:id="@+id/text_privacy_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/action_privacy" />
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="24dp"
+        android:textSize="14sp"
+        android:text="@string/privacy_hint" />
+
+    <CheckBox
+        android:id="@+id/checkbox_age_restricted"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/privacy_age_restricted" />
+
+    <CheckBox
+        android:id="@+id/checkbox_do_not_sell"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/privacy_do_not_sell" />
+
+    <CheckBox
+        android:id="@+id/checkbox_user_consent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/privacy_user_consent" />
+
+    <Button
+        android:id="@+id/btn_initialize_sdk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/action_initialize_sdk" />
 
 </LinearLayout>
