@@ -28,13 +28,6 @@
             android:text="@string/format_mrec" />
     </RadioGroup>
 
-    <Button
-        android:id="@+id/btn_custom_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="@string/action_custom_info" />
-
     <FrameLayout
         android:id="@+id/banner_container"
         android:layout_width="match_parent"

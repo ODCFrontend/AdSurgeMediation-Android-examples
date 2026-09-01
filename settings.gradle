@@ -10,7 +10,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        // AdSurgeMediation official artifact repository (GitHub Packages)
+        // AdSurgeMediation official artifact repository (GitHub Packages).
+        // Requires a GitHub token with read access; please contact the AdSurgeMediation team to obtain one.
         maven {
             name = 'AdSurgeMediationGitHubPackages'
             url  = uri('https://maven.pkg.github.com/odcfrontend/TAN_Android_Maven')
@@ -20,6 +21,15 @@ dependencyResolutionManagement {
                 password = settings.providers.gradleProperty('gpr.token').orNull
                         ?: System.getenv('GITHUB_TOKEN')
             }
+        }
+        // Third-party ADN SDK repositories (oversea)
+        maven {
+            name = 'PangleOversea'
+            url  = uri('https://artifact.bytedance.com/repository/pangle')
+        }
+        maven {
+            name = 'MintegralOversea'
+            url  = uri('https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea')
         }
     }
 }

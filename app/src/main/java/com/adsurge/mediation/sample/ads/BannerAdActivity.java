@@ -1,33 +1,24 @@
 package com.adsurge.mediation.sample.ads;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.EditText;
+import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.adsurge.mediation.sample.AdsurgeMediationAdManager;
 import com.adsurge.mediation.sample.R;
 import com.adsurge.mediation.sample.SampleAdConfig;
 
 import com.qq.e.tan.api.TanAd;
+import com.qq.e.tan.api.TanAdFormat;
 import com.qq.e.tan.api.TanAdViewAdListener;
 import com.qq.e.tan.api.ads.TanAdView;
 import com.qq.e.tan.managers.TANAdSdk;
 import com.qq.e.tan.util.AdError;
 
-/**
- * Demonstrates Banner (320x50) and MREC (300x250) ad formats, plus how to report
- * developer custom info / attribution info (see AdsurgeMediation Guidance §8).
- */
-public class BannerAdActivity extends AppCompatActivity {
+public class BannerAdActivity extends Activity {
 
     private static final String TAG = "BannerAdActivity";
 
@@ -36,7 +27,6 @@ public class BannerAdActivity extends AppCompatActivity {
     private FrameLayout mContainer;
     private RadioGroup mRgFormat;
     private boolean mIsMrec;
-    private String mDevCustomInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +49,6 @@ public class BannerAdActivity extends AppCompatActivity {
             mIsMrec = checkedId == R.id.rb_mrec;
             loadAd();
         });
-        findViewById(R.id.btn_custom_info).setOnClickListener(v -> showCustomInfoDialog());
     }
 
     private void loadAd() {
@@ -99,47 +88,31 @@ public class BannerAdActivity extends AppCompatActivity {
             }
         };
 
-        mAdView = mIsMrec
-                ? AdsurgeMediationAdManager.loadMrecAd(this, SampleAdConfig.MREC_AD_UNIT_ID, mContainer, listener)
-                : AdsurgeMediationAdManager.loadBannerAd(this, SampleAdConfig.BANNER_AD_UNIT_ID, mContainer, listener);
-
-        if (!TextUtils.isEmpty(mDevCustomInfo)) {
-            mAdView.setDevCustomInfo(mDevCustomInfo);
+        if (mIsMrec) {
+            mAdView = new TanAdView(this, SampleAdConfig.MREC_AD_UNIT_ID, TanAdFormat.MREC);
+        } else {
+            mAdView = new TanAdView(this, SampleAdConfig.BANNER_AD_UNIT_ID);
         }
+        mAdView.setListener(listener);
+
+        int widthDp = mIsMrec ? 300 : 320;
+        int heightDp = mIsMrec ? 250 : 50;
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                dpToPx(widthDp), dpToPx(heightDp));
+        params.gravity = Gravity.CENTER;
+        mContainer.addView(mAdView, params);
+
+        // Demonstrates setDevCustomInfo (per-ad custom info, reported with every
+        // impression/click) and TANAdSdk.uploadAttributionInfo (one-off attribution).
+        // See AdsurgeMediation Guidance §8. Replace with real values in production.
+        TANAdSdk.uploadAttributionInfo("demo_attribution_info");
+        mAdView.setDevCustomInfo("demo_custom_info");
+
+        mAdView.loadAd();
     }
 
-    /**
-     * Demonstrates setDevCustomInfo (per-ad custom info, reported with every impression/click)
-     * and TANAdSdk.uploadAttributionInfo (one-off attribution info reporting).
-     * See AdsurgeMediation Guidance §8.
-     */
-    private void showCustomInfoDialog() {
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_input, null);
-        EditText etAttribution = dialogView.findViewById(R.id.et_input_1);
-        EditText etCustomInfo = dialogView.findViewById(R.id.et_input_2);
-        etAttribution.setHint("attribution info (JSON)");
-        etCustomInfo.setHint("dev custom info (JSON)");
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.action_custom_info)
-                .setView(dialogView)
-                .setPositiveButton("Confirm", (dialog, which) -> {
-                    String attributionInfo = etAttribution.getText().toString().trim();
-                    String devCustomInfo = etCustomInfo.getText().toString().trim();
-                    if (!TextUtils.isEmpty(attributionInfo)) {
-                        TANAdSdk.uploadAttributionInfo(attributionInfo);
-                        appendLog("uploadAttributionInfo: " + attributionInfo);
-                    }
-                    if (!TextUtils.isEmpty(devCustomInfo)) {
-                        mDevCustomInfo = devCustomInfo;
-                        if (mAdView != null) {
-                            mAdView.setDevCustomInfo(devCustomInfo);
-                        }
-                        appendLog("setDevCustomInfo: " + devCustomInfo);
-                    }
-                })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel())
-                .show();
+    private int dpToPx(int dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density + 0.5f);
     }
 
     @Override

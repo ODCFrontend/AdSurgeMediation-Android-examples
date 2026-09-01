@@ -1,21 +1,19 @@
 <resources>
     <string name="app_name">AdSurgeMediation Sample</string>
 
-    <string name="status_loading">Initializing SDK…</string>
+    <string name="status_loading">Select privacy settings to initialize the SDK.</string>
 
+    <string name="action_initialize_sdk">Apply Privacy Settings &amp; Initialize SDK</string>
     <string name="action_rewarded">Rewarded Video</string>
     <string name="action_interstitial">Interstitial</string>
     <string name="action_banner">Banner / MREC</string>
-    <string name="action_privacy">Privacy Settings</string>
 
     <string name="action_load">Load Ad</string>
     <string name="action_show">Show Ad</string>
-    <string name="action_ssv">Set SSV Params</string>
-    <string name="action_custom_info">Custom / Attribution Info</string>
     <string name="format_banner">Banner 320x50</string>
     <string name="format_mrec">MREC 300x250</string>
 
-    <string name="privacy_hint">Changes here are persisted locally and take effect on the next app launch (inside Application.onCreate(), before SDK init()); they will not affect the SDK already initialized in the current process (see G-05).</string>
+    <string name="privacy_hint">Defaults: COPPA off, CCPA off, GDPR consent on. Adjust them if needed, then initialize the SDK. This demo does not save your selections locally.</string>
     <string name="privacy_age_restricted">COPPA: current user is a child</string>
     <string name="privacy_do_not_sell">CCPA: user opts out of selling personal data</string>
     <string name="privacy_user_consent">GDPR: user has consented to personalized ads</string>

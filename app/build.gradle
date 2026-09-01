@@ -7,7 +7,7 @@ android {
     compileSdk Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
 
     defaultConfig {
-        applicationId "com.adsurge.mediation.sample"
+        applicationId "com.adsurge.mediation.demo"
         minSdk Integer.parseInt(project.ANDROID_BUILD_MIN_SDK_VERSION)
         targetSdk Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
         versionCode 1
@@ -28,8 +28,14 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-
-    implementation "com.adsurge.mediation:tan-sdk:${project.SDK_VERSION}"
-    implementation "com.adsurge.mediation:admob-adapter:${project.ADMOB_ADAPTER_VERSION}"
+    implementation 'com.adsurge.mediation:tan-sdk:1.7.1'
+    implementation 'com.adsurge.mediation:adsurge-adapter:1.9.0.0'
+    implementation 'com.adsurge.mediation:admob-adapter:25.4.0.0'
+    implementation 'com.adsurge.mediation:applovin-adapter:13.6.3.0'
+    implementation 'com.adsurge.mediation:bigo-adapter:5.10.1.0'
+    implementation 'com.adsurge.mediation:inmobi-adapter:11.4.0.0'
+    implementation 'com.adsurge.mediation:vungle-adapter:7.7.7.0'
+    implementation 'com.adsurge.mediation:meta-adapter:6.21.0.2'
+    implementation 'com.adsurge.mediation:mintegral-adapter:17.1.61.0'
+    implementation 'com.adsurge.mediation:pangle-adapter:8.2.0.4.0'
 }

@@ -1,19 +1,12 @@
 package com.adsurge.mediation.sample.ads;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.adsurge.mediation.sample.AdsurgeMediationAdManager;
 import com.adsurge.mediation.sample.R;
 import com.adsurge.mediation.sample.SampleAdConfig;
 
@@ -26,14 +19,13 @@ import com.qq.e.tan.util.AdError;
 
 import java.util.Map;
 
-public class RewardedAdActivity extends AppCompatActivity {
+public class RewardedAdActivity extends Activity {
 
     private static final String TAG = "RewardedAdActivity";
 
     private TanRewardedAd mRewardedAd;
     private TextView mLogText;
     private Button mShowButton;
-    private String mDevCustomInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +45,14 @@ public class RewardedAdActivity extends AppCompatActivity {
     private void setupListeners() {
         findViewById(R.id.btn_load).setOnClickListener(v -> loadRewardedAd());
         mShowButton.setOnClickListener(v -> showRewardedAd());
-        findViewById(R.id.btn_ssv).setOnClickListener(v -> showSsvDialog());
-        findViewById(R.id.btn_custom_info).setOnClickListener(v -> showCustomInfoDialog());
     }
 
     private void loadRewardedAd() {
         appendLog("Loading rewarded ad...");
         mShowButton.setEnabled(false);
 
-        mRewardedAd = AdsurgeMediationAdManager.loadRewardedAd(this, SampleAdConfig.REWARDED_AD_UNIT_ID,
-                new TanRewardVideoAdListener() {
+        mRewardedAd = new TanRewardedAd(this, SampleAdConfig.REWARDED_AD_UNIT_ID);
+        mRewardedAd.setListener(new TanRewardVideoAdListener() {
                     @Override
                     public void onAdLoaded(TanAd tanAd) {
                         appendLog("Ad loaded");
@@ -107,9 +97,20 @@ public class RewardedAdActivity extends AppCompatActivity {
                     }
                 });
 
-        if (!TextUtils.isEmpty(mDevCustomInfo)) {
-            mRewardedAd.setDevCustomInfo(mDevCustomInfo);
-        }
+        // Demonstrates ServerSideVerificationOptions (SSV), used together with a server-side
+        // reward callback to verify reward grants. See AdsurgeMediation Guidance §2.2.
+        // Replace userId/customData with real values in production.
+        mRewardedAd.setServerSideVerificationOptions(new ServerSideVerificationOptions.Builder()
+                .setUserId("demo_user_id")
+                .setCustomData("demo_custom_data")
+                .build());
+
+        // Demonstrates setDevCustomInfo (per-ad custom info) and TANAdSdk.uploadAttributionInfo
+        // (one-off attribution reporting). See AdsurgeMediation Guidance §8.
+        TANAdSdk.uploadAttributionInfo("demo_attribution_info");
+        mRewardedAd.setDevCustomInfo("demo_custom_info");
+
+        mRewardedAd.loadAd();
     }
 
     private void showRewardedAd() {
@@ -117,75 +118,11 @@ public class RewardedAdActivity extends AppCompatActivity {
             appendLog("Load an ad first");
             return;
         }
-        boolean success = AdsurgeMediationAdManager.showRewardedAd(mRewardedAd, this);
-        if (!success) {
-            appendLog("Ad not ready, cannot show");
-        }
-    }
-
-    /**
-     * Demonstrates ServerSideVerificationOptions (SSV), used together with a server-side
-     * reward callback to verify reward grants. See AdsurgeMediation Guidance §2.2.
-     */
-    private void showSsvDialog() {
-        if (mRewardedAd == null) {
-            Toast.makeText(this, "Please load the advertisement first.", Toast.LENGTH_SHORT).show();
+        if (!mRewardedAd.isValid()) {
+            appendLog("Ad not ready, call loadAd() again");
             return;
         }
-
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_input, null);
-        EditText etUserId = dialogView.findViewById(R.id.et_input_1);
-        EditText etCustomData = dialogView.findViewById(R.id.et_input_2);
-        etUserId.setHint("user id");
-        etCustomData.setHint("custom data");
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.action_ssv)
-                .setView(dialogView)
-                .setPositiveButton("Confirm", (dialog, which) -> {
-                    ServerSideVerificationOptions options = new ServerSideVerificationOptions.Builder()
-                            .setUserId(etUserId.getText().toString())
-                            .setCustomData(etCustomData.getText().toString())
-                            .build();
-                    mRewardedAd.setServerSideVerificationOptions(options);
-                    appendLog("SSV params set: userId=" + options.getUserId()
-                            + ", customData=" + options.getCustomData());
-                })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel())
-                .show();
-    }
-
-    /**
-     * Demonstrates setDevCustomInfo (per-ad custom info) and TANAdSdk.uploadAttributionInfo
-     * (one-off attribution reporting). See AdsurgeMediation Guidance §8.
-     */
-    private void showCustomInfoDialog() {
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_input, null);
-        EditText etAttribution = dialogView.findViewById(R.id.et_input_1);
-        EditText etCustomInfo = dialogView.findViewById(R.id.et_input_2);
-        etAttribution.setHint("attribution info (JSON)");
-        etCustomInfo.setHint("dev custom info (JSON)");
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.action_custom_info)
-                .setView(dialogView)
-                .setPositiveButton("Confirm", (dialog, which) -> {
-                    String attributionInfo = etAttribution.getText().toString().trim();
-                    String devCustomInfo = etCustomInfo.getText().toString().trim();
-                    if (!TextUtils.isEmpty(attributionInfo)) {
-                        TANAdSdk.uploadAttributionInfo(attributionInfo);
-                        appendLog("uploadAttributionInfo: " + attributionInfo);
-                    }
-                    if (!TextUtils.isEmpty(devCustomInfo)) {
-                        mDevCustomInfo = devCustomInfo;
-                        if (mRewardedAd != null) {
-                            mRewardedAd.setDevCustomInfo(devCustomInfo);
-                        }
-                        appendLog("setDevCustomInfo: " + devCustomInfo);
-                    }
-                })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel())
-                .show();
+        mRewardedAd.showAd(this);
     }
 
     private void appendLog(String message) {
