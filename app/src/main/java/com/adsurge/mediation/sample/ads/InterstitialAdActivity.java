@@ -9,17 +9,17 @@ import android.widget.TextView;
 import com.adsurge.mediation.sample.R;
 import com.adsurge.mediation.sample.SampleAdConfig;
 
-import com.qq.e.tan.api.TanAd;
-import com.qq.e.tan.api.TanInterstitialAdListener;
-import com.qq.e.tan.api.ads.TanInterstitialAd;
-import com.qq.e.tan.managers.TANAdSdk;
-import com.qq.e.tan.util.AdError;
+import com.adsurge.mediation.api.MediationAd;
+import com.adsurge.mediation.api.MediationInterstitialAdListener;
+import com.adsurge.mediation.api.ads.MediationInterstitialAd;
+import com.adsurge.mediation.managers.AdSurgeMediationSDK;
+import com.adsurge.mediation.util.AdError;
 
 public class InterstitialAdActivity extends Activity {
 
     private static final String TAG = "InterstitialAdActivity";
 
-    private TanInterstitialAd mInterstitialAd;
+    private MediationInterstitialAd mInterstitialAd;
     private TextView mLogText;
     private Button mShowButton;
 
@@ -47,45 +47,45 @@ public class InterstitialAdActivity extends Activity {
         appendLog("Loading interstitial ad...");
         mShowButton.setEnabled(false);
 
-        mInterstitialAd = new TanInterstitialAd(this, SampleAdConfig.INTERSTITIAL_AD_UNIT_ID);
-        mInterstitialAd.setListener(new TanInterstitialAdListener() {
+        mInterstitialAd = new MediationInterstitialAd(this, SampleAdConfig.INTERSTITIAL_AD_UNIT_ID);
+        mInterstitialAd.setListener(new MediationInterstitialAdListener() {
                     @Override
-                    public void onAdLoaded(TanAd tanAd) {
+                    public void onAdLoaded(MediationAd mediationAd) {
                         appendLog("Ad loaded");
                         mShowButton.setEnabled(true);
                     }
 
                     @Override
-                    public void onAdDisplayed(TanAd tanAd) {
+                    public void onAdDisplayed(MediationAd mediationAd) {
                         appendLog("Ad displayed");
                     }
 
                     @Override
-                    public void onAdClicked(TanAd tanAd) {
+                    public void onAdClicked(MediationAd mediationAd) {
                         appendLog("Ad clicked");
                     }
 
                     @Override
-                    public void onAdLoadFailed(TanAd tanAd, AdError error) {
+                    public void onAdLoadFailed(MediationAd mediationAd, AdError error) {
                         appendLog("Load failed: " + error.errorCode + " - " + error.errorMsg);
                     }
 
                     @Override
-                    public void onAdShowFailed(TanAd tanAd, AdError error) {
+                    public void onAdShowFailed(MediationAd mediationAd, AdError error) {
                         appendLog("Show failed: " + error.errorCode + " - " + error.errorMsg);
                     }
 
                     @Override
-                    public void onAdClosed(TanAd tanAd) {
+                    public void onAdClosed(MediationAd mediationAd) {
                         appendLog("Ad closed");
                         mShowButton.setEnabled(false);
                     }
                 });
 
         // Demonstrates setDevCustomInfo (per-ad custom info, reported with every
-        // impression/click) and TANAdSdk.uploadAttributionInfo (one-off attribution).
+        // impression/click) and AdSurgeMediationSDK.uploadAttributionInfo (one-off attribution).
         // See AdsurgeMediation Guidance §8. Replace with real values in production.
-        TANAdSdk.uploadAttributionInfo("demo_attribution_info");
+        AdSurgeMediationSDK.uploadAttributionInfo("demo_attribution_info");
         mInterstitialAd.setDevCustomInfo("demo_custom_info");
 
         mInterstitialAd.loadAd();

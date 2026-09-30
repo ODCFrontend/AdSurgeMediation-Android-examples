@@ -12,10 +12,10 @@ import com.adsurge.mediation.sample.ads.BannerAdActivity;
 import com.adsurge.mediation.sample.ads.InterstitialAdActivity;
 import com.adsurge.mediation.sample.ads.RewardedAdActivity;
 
-import com.qq.e.tan.api.TANPrivacyConfiguration;
-import com.qq.e.tan.managers.OnStartListener;
-import com.qq.e.tan.managers.TANAdSdk;
-import com.qq.e.tan.util.AdError;
+import com.adsurge.mediation.api.MediationPrivacyConfiguration;
+import com.adsurge.mediation.managers.OnStartListener;
+import com.adsurge.mediation.managers.AdSurgeMediationSDK;
+import com.adsurge.mediation.util.AdError;
 
 public class MainActivity extends Activity {
 
@@ -54,7 +54,7 @@ public class MainActivity extends Activity {
                 startActivityIfSdkReady(InterstitialAdActivity.class));
         findViewById(R.id.btn_banner).setOnClickListener(v ->
                 startActivityIfSdkReady(BannerAdActivity.class));
-        findViewById(R.id.btn_initialize_sdk).setOnClickListener(v -> initializeTANSdk());
+        findViewById(R.id.btn_initialize_sdk).setOnClickListener(v -> initializeSdk());
     }
 
     private void setupPrivacySettings() {
@@ -64,22 +64,22 @@ public class MainActivity extends Activity {
     }
 
     private void applyPrivacySettings() {
-        TANPrivacyConfiguration.setAgeRestrictedUser(mAgeCheckBox.isChecked());
-        TANPrivacyConfiguration.setDoNotSell(mDoNotSellCheckBox.isChecked());
-        TANPrivacyConfiguration.setUserConsent(mConsentCheckBox.isChecked());
+        MediationPrivacyConfiguration.setAgeRestrictedUser(mAgeCheckBox.isChecked());
+        MediationPrivacyConfiguration.setDoNotSell(mDoNotSellCheckBox.isChecked());
+        MediationPrivacyConfiguration.setUserConsent(mConsentCheckBox.isChecked());
     }
 
-    private void initializeTANSdk() {
+    private void initializeSdk() {
         mSdkReady = false;
         mInitError = null;
-        mStatusText.setText("SDK version: " + TANAdSdk.getSdkVersion()
+        mStatusText.setText("SDK version: " + AdSurgeMediationSDK.getSdkVersion()
                 + "\nInit status: in progress…");
 
         // Read and apply the current privacy options before each initialization.
         applyPrivacySettings();
-        TANAdSdk.getInstance().init(this, SampleAdConfig.APP_ID);
+        AdSurgeMediationSDK.getInstance().init(this, SampleAdConfig.APP_ID);
 
-        TANAdSdk.getInstance().start(new OnStartListener() {
+        AdSurgeMediationSDK.getInstance().start(new OnStartListener() {
             @Override
             public void onStartComplete() {
                 mSdkReady = true;
@@ -107,7 +107,7 @@ public class MainActivity extends Activity {
         // The init callback may be delivered on a background thread, so post to the UI thread.
         if (!isFinishing()) {
             runOnUiThread(() -> {
-                String version = TANAdSdk.getSdkVersion();
+                String version = AdSurgeMediationSDK.getSdkVersion();
 
                 StringBuilder sb = new StringBuilder();
                 sb.append("SDK version: ").append(version).append('\n');
