@@ -10,7 +10,7 @@ An official sample project for developers, demonstrating how to integrate the Ad
 - Interstitial (`InterstitialAdActivity`)
 - Banner (320x50) / MREC (300x250) with runtime format switch (`BannerAdActivity`)
 - Developer custom info reporting (`setDevCustomInfo`) and attribution info reporting
-  (`TANAdSdk.uploadAttributionInfo`) on every ad format
+  (`AdSurgeMediationSDK.uploadAttributionInfo`) on every ad format
 - Integrated with AdMob as a sample ADN
 
 ## Project Structure

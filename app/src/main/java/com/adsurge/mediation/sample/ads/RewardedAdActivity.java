@@ -10,12 +10,12 @@ import android.widget.Toast;
 import com.adsurge.mediation.sample.R;
 import com.adsurge.mediation.sample.SampleAdConfig;
 
-import com.qq.e.tan.api.ServerSideVerificationOptions;
-import com.qq.e.tan.api.TanAd;
-import com.qq.e.tan.api.TanRewardVideoAdListener;
-import com.qq.e.tan.api.ads.TanRewardedAd;
-import com.qq.e.tan.managers.TANAdSdk;
-import com.qq.e.tan.util.AdError;
+import com.adsurge.mediation.api.ServerSideVerificationOptions;
+import com.adsurge.mediation.api.MediationAd;
+import com.adsurge.mediation.api.MediationRewardVideoAdListener;
+import com.adsurge.mediation.api.ads.MediationRewardedAd;
+import com.adsurge.mediation.managers.AdSurgeMediationSDK;
+import com.adsurge.mediation.util.AdError;
 
 import java.util.Map;
 
@@ -23,7 +23,7 @@ public class RewardedAdActivity extends Activity {
 
     private static final String TAG = "RewardedAdActivity";
 
-    private TanRewardedAd mRewardedAd;
+    private MediationRewardedAd mRewardedAd;
     private TextView mLogText;
     private Button mShowButton;
 
@@ -51,47 +51,55 @@ public class RewardedAdActivity extends Activity {
         appendLog("Loading rewarded ad...");
         mShowButton.setEnabled(false);
 
-        mRewardedAd = new TanRewardedAd(this, SampleAdConfig.REWARDED_AD_UNIT_ID);
-        mRewardedAd.setListener(new TanRewardVideoAdListener() {
+        mRewardedAd = new MediationRewardedAd(this, SampleAdConfig.REWARDED_AD_UNIT_ID);
+        mRewardedAd.setListener(new MediationRewardVideoAdListener() {
                     @Override
-                    public void onAdLoaded(TanAd tanAd) {
+                    public void onAdLoaded(MediationAd mediationAd) {
                         appendLog("Ad loaded");
+                        // Demonstrates the ad revenue detail fields added in AdsurgeMediation
+                        // SDK 1.8.0. See AdsurgeMediation Guidance §3.1.
+                        appendLog("Ad source unit ID: " + mediationAd.getAdSourceUnitID());
+                        appendLog("Currency: " + mediationAd.getCurrency());
+                        appendLog("Revenue precision: " + mediationAd.getRevenuePrecision());
+                        appendLog("Bidding type: " + mediationAd.getBiddingType());
+                        appendLog("Region code: " + mediationAd.getRegionCode());
+                        appendLog("Mediation placement ID: " + mediationAd.getMediationPlacementID());
                         mShowButton.setEnabled(true);
                     }
 
                     @Override
-                    public void onAdDisplayed(TanAd tanAd) {
+                    public void onAdDisplayed(MediationAd mediationAd) {
                         appendLog("Ad displayed");
                     }
 
                     @Override
-                    public void onAdClicked(TanAd tanAd) {
+                    public void onAdClicked(MediationAd mediationAd) {
                         appendLog("Ad clicked");
                     }
 
                     @Override
-                    public void onAdLoadFailed(TanAd tanAd, AdError error) {
+                    public void onAdLoadFailed(MediationAd mediationAd, AdError error) {
                         appendLog("Load failed: " + error.errorCode + " - " + error.errorMsg);
                     }
 
                     @Override
-                    public void onAdShowFailed(TanAd tanAd, AdError error) {
+                    public void onAdShowFailed(MediationAd mediationAd, AdError error) {
                         appendLog("Show failed: " + error.errorCode + " - " + error.errorMsg);
                     }
 
                     @Override
-                    public void onReward(TanAd tanAd, Map<String, Object> rewardInfo) {
+                    public void onReward(MediationAd mediationAd, Map<String, Object> rewardInfo) {
                         appendLog("Reward granted: " + rewardInfo);
                         Toast.makeText(RewardedAdActivity.this, "Reward granted!", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onRewardFailed(TanAd tanAd, int errorCode, String errorMsg) {
+                    public void onRewardFailed(MediationAd mediationAd, int errorCode, String errorMsg) {
                         appendLog("Reward failed: " + errorCode + " - " + errorMsg);
                     }
 
                     @Override
-                    public void onAdClosed(TanAd tanAd) {
+                    public void onAdClosed(MediationAd mediationAd) {
                         appendLog("Ad closed");
                         mShowButton.setEnabled(false);
                     }
@@ -105,9 +113,9 @@ public class RewardedAdActivity extends Activity {
                 .setCustomData("demo_custom_data")
                 .build());
 
-        // Demonstrates setDevCustomInfo (per-ad custom info) and TANAdSdk.uploadAttributionInfo
+        // Demonstrates setDevCustomInfo (per-ad custom info) and AdSurgeMediationSDK.uploadAttributionInfo
         // (one-off attribution reporting). See AdsurgeMediation Guidance §8.
-        TANAdSdk.uploadAttributionInfo("demo_attribution_info");
+        AdSurgeMediationSDK.uploadAttributionInfo("demo_attribution_info");
         mRewardedAd.setDevCustomInfo("demo_custom_info");
 
         mRewardedAd.loadAd();

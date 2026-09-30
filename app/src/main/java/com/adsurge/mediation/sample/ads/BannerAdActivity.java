@@ -11,18 +11,18 @@ import android.widget.TextView;
 import com.adsurge.mediation.sample.R;
 import com.adsurge.mediation.sample.SampleAdConfig;
 
-import com.qq.e.tan.api.TanAd;
-import com.qq.e.tan.api.TanAdFormat;
-import com.qq.e.tan.api.TanAdViewAdListener;
-import com.qq.e.tan.api.ads.TanAdView;
-import com.qq.e.tan.managers.TANAdSdk;
-import com.qq.e.tan.util.AdError;
+import com.adsurge.mediation.api.MediationAd;
+import com.adsurge.mediation.api.MediationAdFormat;
+import com.adsurge.mediation.api.MediationAdViewAdListener;
+import com.adsurge.mediation.api.ads.MediationAdView;
+import com.adsurge.mediation.managers.AdSurgeMediationSDK;
+import com.adsurge.mediation.util.AdError;
 
 public class BannerAdActivity extends Activity {
 
     private static final String TAG = "BannerAdActivity";
 
-    private TanAdView mAdView;
+    private MediationAdView mAdView;
     private TextView mLogText;
     private FrameLayout mContainer;
     private RadioGroup mRgFormat;
@@ -61,37 +61,37 @@ public class BannerAdActivity extends Activity {
         String label = mIsMrec ? "MREC" : "Banner";
         appendLog("Loading " + label + " ad...");
 
-        TanAdViewAdListener listener = new TanAdViewAdListener() {
+        MediationAdViewAdListener listener = new MediationAdViewAdListener() {
             @Override
-            public void onAdLoaded(TanAd tanAd) {
+            public void onAdLoaded(MediationAd mediationAd) {
                 appendLog(label + " loaded");
             }
 
             @Override
-            public void onAdDisplayed(TanAd tanAd) {
+            public void onAdDisplayed(MediationAd mediationAd) {
                 appendLog(label + " displayed");
             }
 
             @Override
-            public void onAdClicked(TanAd tanAd) {
+            public void onAdClicked(MediationAd mediationAd) {
                 appendLog(label + " clicked");
             }
 
             @Override
-            public void onAdLoadFailed(TanAd tanAd, AdError error) {
+            public void onAdLoadFailed(MediationAd mediationAd, AdError error) {
                 appendLog(label + " load failed: " + error.errorCode + " - " + error.errorMsg);
             }
 
             @Override
-            public void onAdShowFailed(TanAd tanAd, AdError error) {
+            public void onAdShowFailed(MediationAd mediationAd, AdError error) {
                 appendLog(label + " show failed: " + error.errorCode + " - " + error.errorMsg);
             }
         };
 
         if (mIsMrec) {
-            mAdView = new TanAdView(this, SampleAdConfig.MREC_AD_UNIT_ID, TanAdFormat.MREC);
+            mAdView = new MediationAdView(this, SampleAdConfig.MREC_AD_UNIT_ID, MediationAdFormat.MREC);
         } else {
-            mAdView = new TanAdView(this, SampleAdConfig.BANNER_AD_UNIT_ID);
+            mAdView = new MediationAdView(this, SampleAdConfig.BANNER_AD_UNIT_ID);
         }
         mAdView.setListener(listener);
 
@@ -103,9 +103,9 @@ public class BannerAdActivity extends Activity {
         mContainer.addView(mAdView, params);
 
         // Demonstrates setDevCustomInfo (per-ad custom info, reported with every
-        // impression/click) and TANAdSdk.uploadAttributionInfo (one-off attribution).
+        // impression/click) and AdSurgeMediationSDK.uploadAttributionInfo (one-off attribution).
         // See AdsurgeMediation Guidance §8. Replace with real values in production.
-        TANAdSdk.uploadAttributionInfo("demo_attribution_info");
+        AdSurgeMediationSDK.uploadAttributionInfo("demo_attribution_info");
         mAdView.setDevCustomInfo("demo_custom_info");
 
         mAdView.loadAd();

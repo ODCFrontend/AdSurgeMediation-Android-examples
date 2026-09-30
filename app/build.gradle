@@ -28,14 +28,14 @@ android {
 }
 
 dependencies {
-    implementation 'com.adsurge.mediation:tan-sdk:1.7.1'
-    implementation 'com.adsurge.mediation:adsurge-adapter:1.9.0.0'
-    implementation 'com.adsurge.mediation:admob-adapter:25.4.0.0'
-    implementation 'com.adsurge.mediation:applovin-adapter:13.6.3.0'
-    implementation 'com.adsurge.mediation:bigo-adapter:5.10.1.0'
-    implementation 'com.adsurge.mediation:inmobi-adapter:11.4.0.0'
-    implementation 'com.adsurge.mediation:vungle-adapter:7.7.7.0'
-    implementation 'com.adsurge.mediation:meta-adapter:6.21.0.2'
-    implementation 'com.adsurge.mediation:mintegral-adapter:17.1.61.0'
-    implementation 'com.adsurge.mediation:pangle-adapter:8.2.0.4.0'
+    implementation 'com.adsurge.sdk:mediation-sdk:1.8.0'
+    implementation 'com.adsurge.sdk:adsurge-adapter:1.9.0.1'
+    implementation 'com.adsurge.sdk:admob-adapter:25.4.0.1'
+    implementation 'com.adsurge.sdk:applovin-adapter:13.6.3.1'
+    implementation 'com.adsurge.sdk:bigo-adapter:5.10.1.1'
+    implementation 'com.adsurge.sdk:inmobi-adapter:11.4.1.0'
+    implementation 'com.adsurge.sdk:vungle-adapter:7.7.7.1'
+    implementation 'com.adsurge.sdk:meta-adapter:6.21.0.3'
+    implementation 'com.adsurge.sdk:mintegral-adapter:17.1.61.1'
+    implementation 'com.adsurge.sdk:pangle-adapter:8.2.0.4.1'
 }
